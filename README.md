@@ -334,7 +334,7 @@ nextflow run cleandups.nf -with-report <file-name>.html
 
 <!-- **Exercise 3:** Look at the sample Groovy code [here](files/data/ex3-groovy.nf). Try to understand and execute on your machine. -->
 
-## 3. Generalising and Extending
+## 2. Generalising and Extending
 We'll now extend this example, introducing more powerful features of Nextflow as well as some of the complication of workflow design.
 
 Extending the example:
@@ -344,7 +344,7 @@ Extending the example:
 - Complication: may need to carry the base name of the input to the final output.
 - Can repeat some steps for different parameters.
 
-### 3.1. Parameters
+### 2.1. Parameters
 Parameters can be specified in a Nextflow script file:
 ```nextflow
 input_ch = Channel.fromPath(params.data)
@@ -363,7 +363,7 @@ Nextflow makes a distinction between parameters with a single dash (`-`) and wit
 
 The double-dash parameters are user-defined and completely extensible -- they are used to populate `params`. They modify the behaviour of **your** program.
 
-### 3.2. [Channels](https://www.nextflow.io/docs/latest/channel.html)
+### 2.2. [Channels](https://www.nextflow.io/docs/latest/channel.html)
 Nextflow channels support different data types:
 - `path`
 - `stdin`
@@ -372,7 +372,7 @@ Nextflow channels support different data types:
 
 **NB:** `val` is the most generic -- could be a file name. But sending a file provides power since you can access Groovy's file handling capacity **and**, more importantly does staging of files
 
-#### 3.2.1. Creating channels
+#### 2.2.1. Creating channels
 ```nextflow
 Channel.create()
 Channel.empty
@@ -392,8 +392,8 @@ split         spread        fork
 count         min/max/sum   print/view
 ```
 
-### 3.3. Generalising Our Example
-#### 3.3.1. Multiple inputs
+### 2.3. Generalising Our Example
+#### 2.3.1. Multiple inputs
 ```nextflow
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
@@ -468,7 +468,7 @@ Succeeded   : 9
 ```
 Now I'm going to add a next step -- say we want to split the IDs into groups using `split` but try different values of splitting.
 
-#### 3.3.2. Multiple parameters
+#### 2.3.2. Multiple parameters
 **Exercise 4:** Now try adding a process to our Nextflow example and for splitting the file but using different split values (solution [HERE](files/data/ex4-cleandups-multi-params.nf)), e.g.:
 ```bash
 split -l 400 data.txt dataX
@@ -499,7 +499,7 @@ workflow {
 ```
 Have a look at the modified Nextflow scrip [here](files/data/ex4-cleandups-multi-params-mod.nf).
 
-### 3.4. Managing Grouped Files
+### 2.4. Managing Grouped Files
 We've seen so far where we have a stream of file being processed independently. But in many applications there may be matched data sets. We'll now look at an example, using a popular bioinformatics tool called `PLINK`. In its most common usages, `PLINK` takes in three related files, typically with the same but different suffixed: `.bed`, `.bim`, `.fam`.
 
 Short version of the command:
@@ -530,7 +530,7 @@ Lets recap -- Groovy closures. Simply, a **closure** is an anonymous function:
 ```
 Similar to lambdas in `Python` and `Java`.
 
-#### 3.4.1. Version 1: `map`
+#### 2.4.1. Version 1: `map`
 ```nextflow
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
@@ -581,7 +581,7 @@ process getFreq {
 ```
 Look at [`plink1B.nf`](files/data/plink1B.nf). It's a slightly different ways of doing things. On examples of this size, none of these options are much better or worse but it's useful to see different ways of doing things for later.
 
-#### 3.4.2. Version 2: `fromFilePairs`
+#### 2.4.2. Version 2: `fromFilePairs`
 Use `fromFilePairs` 
 - Takes a closure used to gather `files` together with the same `key`:
 ```nextflow
@@ -653,7 +653,7 @@ process checkData {
 }
 ```
 
-#### 3.4.3 Version 3: Final version
+#### 2.4.3 Version 3: Final version
 ```nextflow
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
@@ -688,7 +688,7 @@ workflow {
 
 **Exercise 5:** Have a look at [`ex5-weather.nf`](files/data/ex5-weather.nf). In the data directory are set of data files for different years and months. First, I want you to use `paste` to combine all the files for the same year and month (`paste` joins files horizontal-wise). Then these new files should be concated.
 
-### 3.5. On absolute paths
+### 2.5. On absolute paths
 Great care needs to be taken when referring to absolute paths. Consider the following script. Assumming that local execution is being done, this should work.
 
 ```nextflow
@@ -708,7 +708,7 @@ process show {
 ```
 However, there is a big difference in the two uses of absolute paths. While it might be more appropriate or useful to pass the first path as a parameter, there is no real problem. Netflow will transparently stage the input files to the working directories as appropriate (generally using hard links). But the second hard-coded file will cause failures when we try to use Docker.
 
-## 4. Nextflow + [Docker](https://www.nextflow.io/docs/latest/docker.html) & [Singularity](https://www.nextflow.io/docs/latest/singularity.html) Containers
+## 3. Nextflow + [Docker](https://www.nextflow.io/docs/latest/docker.html) & [Singularity](https://www.nextflow.io/docs/latest/singularity.html) Containers
 
 Light-weight virtualisation abstraction layer:
 - Currently run on `Unix` like systems (e.g., Linux, macOS).
@@ -761,7 +761,7 @@ nextflow run plink.nf -with-singularity docker://quay.io/banshee1221/h3agwas-pli
 
 Now, even if you **don't** have `plink`, your script will work because my Docker/Singularity image has `plink` insalled!
 
-### 4.1. Directory/file access
+### 3.1. Directory/file access
 Nextflow Docker/Singularity support highly transparent -- but pay attention to good practice:
 - For each process Docker/Singularity mounts the work directory for **that** process on the Docker/Singularuty image.
 - Files can be staged in and out using Nextflow mechanisms.
@@ -828,7 +828,7 @@ Any absolute paths (other than those used in staging) will result in error.
 nextflow run ex6-dockersee.nf -with-docker quay.io/banshee1221/h3agwas-plink
 ```
 
-### 4.2. Docker/Singularity profiles
+### 3.2. Docker/Singularity profiles
 In `nextflow.config`:
 ```nextflow
 profiles {
@@ -858,7 +858,7 @@ Profiles can be extended in many ways:
 - Can mount other host directories
 - Can pass arbitrary Docker parameters
 
-## 5. Executors
+## 4. Executors
 
 A Nextflow `executor` is the mechanism which Nexflow runs the  code in each of the processes:
 - Default is `local`: process is run as a script
@@ -869,7 +869,7 @@ There are many others:
 - Amazon (AWS Batch)
 - SGE (Sun Grid Engine)
 
-### 5.1. Selecting an `executor`
+### 4.1. Selecting an `executor`
 Can be done through annotating each `process`:
 - `executor` directive, e.g. `executor 'pbs'`
 - resource constraints.
@@ -877,7 +877,7 @@ Can be done through annotating each `process`:
 Or, `nextflow.config` file:
 - either global or per-process.
 
-### 5.2. Nextflow on a cluster (HPC)
+### 4.2. Nextflow on a cluster (HPC)
 Script runs on the **head** node!
 - Nextflow uses the `executor` information to decide how the job should run.
 - Each process can be handled differently
@@ -896,7 +896,7 @@ process {
 }
 ```
 
-### 5.2. Nextflow at CHPC
+### 4.2. Nextflow at CHPC
 All the remarks in the previous section apply. You normally run Nextflow on the head node of the cluster -- Nextflow submits jobs on your behalf.
 
 ```bash
@@ -981,7 +981,7 @@ profiles {
 nextflow run chpc.nf -profile chpc
 ```
 
-### 5.3. Sheduler + Docker
+### 4.3. Sheduler + Docker
 If your cluster supports Docker you can combine the two. Nextflow has recently annnounced support of Singularity -- principles are the same.
 ```nextflow
 process.container = 'quay.io/banshee1221/h3agwas-plink:latest'
@@ -996,7 +996,7 @@ process {
 }
 ```
 
-### 5.3. Amazon Elastic Compute Cloud (EC2)
+### 4.3. Amazon Elastic Compute Cloud (EC2)
 Netflow has native support for EC2. You need an account on EC2, and an image with the appropriate support.
   
 To launch your code:
