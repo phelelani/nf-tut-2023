@@ -688,25 +688,25 @@ workflow {
 
 **Exercise 5:** Have a look at [`ex5-weather.nf`](files/data/ex5-weather.nf). In the data directory are set of data files for different years and months. First, I want you to use `paste` to combine all the files for the same year and month (`paste` joins files horizontal-wise). Then these new files should be concated.
 
-### 2.5. On absolute paths
-Great care needs to be taken when referring to absolute paths. Consider the following script. Assumming that local execution is being done, this should work.
+<!-- ### 2.5. On absolute paths -->
+<!-- Great care needs to be taken when referring to absolute paths. Consider the following script. Assumming that local execution is being done, this should work. -->
 
-```nextflow
-input = Channel.fromPath("/data/batch1/myfile.fa")
+<!-- ```nextflow -->
+<!-- input = Channel.fromPath("/data/batch1/myfile.fa") -->
 
-process show {
-    input:
-    path(data)
+<!-- process show { -->
+<!--     input: -->
+<!--     path(data) -->
         
-    output:
-    path('see.out')
+<!--     output: -->
+<!--     path('see.out') -->
 
-    """
-    cp ${data} /home/scott/answer
-    """
-}
-```
-However, there is a big difference in the two uses of absolute paths. While it might be more appropriate or useful to pass the first path as a parameter, there is no real problem. Netflow will transparently stage the input files to the working directories as appropriate (generally using hard links). But the second hard-coded file will cause failures when we try to use Docker.
+<!--     """ -->
+<!--     cp ${data} /home/scott/answer -->
+<!--     """ -->
+<!-- } -->
+<!-- ``` -->
+<!-- However, there is a big difference in the two uses of absolute paths. While it might be more appropriate or useful to pass the first path as a parameter, there is no real problem. Netflow will transparently stage the input files to the working directories as appropriate (generally using hard links). But the second hard-coded file will cause failures when we try to use Docker. -->
 
 ## 3. Nextflow + [Docker](https://www.nextflow.io/docs/latest/docker.html) & [Singularity](https://www.nextflow.io/docs/latest/singularity.html) Containers
 
@@ -828,18 +828,18 @@ Any absolute paths (other than those used in staging) will result in error.
 nextflow run ex6-dockersee.nf -with-docker quay.io/banshee1221/h3agwas-plink
 ```
 
-### 3.2. Docker/Singularity profiles
+### 3.2. Docker & Singularity profiles
 In `nextflow.config`:
 ```nextflow
 profiles {
     ...
     docker {
         docker.enabled = true
-        process.container = 'quay.io/banshee1221/h3agwas-plink:latest'
+        process.container = 'docker://quay.io/banshee1221/h3agwas-plink:latest'
     }
     singularity {
         singularity.enable = true
-        process.container = 
+        process.container = 'docker://quay.io/banshee1221/h3agwas-plink:latest'
     }
 }
 ```
@@ -896,105 +896,105 @@ process {
 }
 ```
 
-### 4.2. Nextflow at CHPC
-All the remarks in the previous section apply. You normally run Nextflow on the head node of the cluster -- Nextflow submits jobs on your behalf.
+<!-- ### 4.2. Nextflow at CHPC -->
+<!-- All the remarks in the previous section apply. You normally run Nextflow on the head node of the cluster -- Nextflow submits jobs on your behalf. -->
 
-```bash
-module load chpc/bioinf
-nextflow -v
-```
+<!-- ```bash -->
+<!-- module load chpc/bioinf -->
+<!-- nextflow -v -->
+<!-- ``` -->
 
-For typical runs on the cluster use `screen`: or the like:
-```bash
-screen -S runjob
-```
-**NB:** important setup issue as at  December 2016.
-    The first time you run Nextflow (anywhere) it needs to download   some libraries. There are some firewall/proxy restrictions on the   head node, so the first time you run Nextflow you actually need it   to run on a worker node. Set up a job like this (putting your own  project number in
-```bash
-#!/bin/bash
-#PBS -N test
-#PBS -l walltime=0:20:00,mem=3GB
-#PBS -q serial
-#PBS -P <PUTYOURPROJECTNUMBERHERE>
+<!-- For typical runs on the cluster use `screen`: or the like: -->
+<!-- ```bash -->
+<!-- screen -S runjob -->
+<!-- ``` -->
+<!-- **NB:** important setup issue as at  December 2016. -->
+<!--     The first time you run Nextflow (anywhere) it needs to download   some libraries. There are some firewall/proxy restrictions on the   head node, so the first time you run Nextflow you actually need it   to run on a worker node. Set up a job like this (putting your own  project number in -->
+<!-- ```bash -->
+<!-- #!/bin/bash -->
+<!-- #PBS -N test -->
+<!-- #PBS -l walltime=0:20:00,mem=3GB -->
+<!-- #PBS -q serial -->
+<!-- #PBS -P <PUTYOURPROJECTNUMBERHERE> -->
 
-HOST=`hostname`
-echo ${HOST}
-module load chpc/nextflow
-nextflow
-```
+<!-- HOST=`hostname` -->
+<!-- echo ${HOST} -->
+<!-- module load chpc/nextflow -->
+<!-- nextflow -->
+<!-- ``` -->
 
-and then `qsub` it. You only have to do this once. One of the good things about Nextflow is that it is easy for you to install yourself since there are very few dependancies, so if you want to upgrade you can just do `curl -fsSL get.nextflow.io |  bash` which will produce the Nextflow binary -- just put it somewhere on your path. You'll have to use the trick above, the first time you run a new version of Nextflow.
+<!-- and then `qsub` it. You only have to do this once. One of the good things about Nextflow is that it is easy for you to install yourself since there are very few dependancies, so if you want to upgrade you can just do `curl -fsSL get.nextflow.io |  bash` which will produce the Nextflow binary -- just put it somewhere on your path. You'll have to use the trick above, the first time you run a new version of Nextflow. -->
 
-The code below can be obtained by saying `git checkout chpc`
-```nextflow
-inp = Channel.fromPath("check.nf")
+<!-- The code below can be obtained by saying `git checkout chpc` -->
+<!-- ```nextflow -->
+<!-- inp = Channel.fromPath("check.nf") -->
 
-process Sorter {
-    input:
-    file data from inp
+<!-- process Sorter { -->
+<!--     input: -->
+<!--     file data from inp -->
 
-    output:
-    file 'lines.srt' into sorted
+<!--     output: -->
+<!--     file 'lines.srt' into sorted -->
     
-    """
-    sleep 10
-    hostname > whoami
-    sort $data > lines.srt
-    """
-}
+<!--     """ -->
+<!--     sleep 10 -->
+<!--     hostname > whoami -->
+<!--     sort $data > lines.srt -->
+<!--     """ -->
+<!-- } -->
 
-process Counter {
-    input:
-    file sortf from sorted
+<!-- process Counter { -->
+<!--     input: -->
+<!--     file sortf from sorted -->
         
-    output:
-    file 'answer' into answer
+<!--     output: -->
+<!--     file 'answer' into answer -->
 
-    """
-    sleep 2
-    hostname  > whoami
-    wc -l $sortf > answer
-    """
-}
+<!--     """ -->
+<!--     sleep 2 -->
+<!--     hostname  > whoami -->
+<!--     wc -l $sortf > answer -->
+<!--     """ -->
+<!-- } -->
 
-answer.subscribe { print it }
-```
-And now use the following `nextflow.config` file, changing the project accordingly.
+<!-- answer.subscribe { print it } -->
+<!-- ``` -->
+<!-- And now use the following `nextflow.config` file, changing the project accordingly. -->
 
-```nextflow
-profiles {
-    standard {
-    process.executor = 'local'
-    }
+<!-- ```nextflow -->
+<!-- profiles { -->
+<!--     standard { -->
+<!--     process.executor = 'local' -->
+<!--     } -->
 
-    chpc {
-        process.clusterOptions = '-P CBBI0930'
-        process.executor = 'pbs'
-        process.$Sorter.queue = 'serial'
-        process.$Counter.queue = 'normal'
-        process.$Counter.cpus = '48'
-        process.$Sorter.clusterOptions = '-P CBBI0930 -l select=3'
-  }
-}
-```
-```bash
-nextflow run chpc.nf -profile chpc
-```
+<!--     chpc { -->
+<!--         process.clusterOptions = '-P CBBI0930' -->
+<!--         process.executor = 'pbs' -->
+<!--         process.$Sorter.queue = 'serial' -->
+<!--         process.$Counter.queue = 'normal' -->
+<!--         process.$Counter.cpus = '48' -->
+<!--         process.$Sorter.clusterOptions = '-P CBBI0930 -l select=3' -->
+<!--   } -->
+<!-- } -->
+<!-- ``` -->
+<!-- ```bash -->
+<!-- nextflow run chpc.nf -profile chpc -->
+<!-- ``` -->
 
-### 4.3. Sheduler + Docker
-If your cluster supports Docker you can combine the two. Nextflow has recently annnounced support of Singularity -- principles are the same.
-```nextflow
-process.container = 'quay.io/banshee1221/h3agwas-plink:latest'
-docker.enabled = false
+<!-- ### 4.3. Sheduler + Docker -->
+<!-- If your cluster supports Docker you can combine the two. Nextflow has recently annnounced support of Singularity -- principles are the same. -->
+<!-- ```nextflow -->
+<!-- process.container = ''docker://quay.io/banshee1221/h3agwas-plink:latest' -->
+<!-- docker.enabled = false -->
 
-process {
-    executor = 'pbs'
-    queue = 'batch'
-    scratch = true
-    cpus = 5
-    memory = '2GB'
-}
-```
+<!-- process { -->
+<!--     executor = 'pbs' -->
+<!--     queue = 'batch' -->
+<!--     scratch = true -->
+<!--     cpus = 5 -->
+<!--     memory = '2GB' -->
+<!-- } -->
+<!-- ``` -->
 
 ### 4.3. Amazon Elastic Compute Cloud (EC2)
 Netflow has native support for EC2. You need an account on EC2, and an image with the appropriate support.
