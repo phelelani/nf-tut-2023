@@ -1009,7 +1009,7 @@ Afterwards shut down:
 nextflow shutdown GenomeCloud
 ```
 
-## How it All Fits 
+## 5. How it All Fits 
 
 <H3 align="center"> Reproducible workflows using Nextflow </H3>
 <p align="center">
