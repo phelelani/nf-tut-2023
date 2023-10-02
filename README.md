@@ -38,12 +38,6 @@
 - The **slides** of the lecture are available [**here**](files/slides/nextflow_tutorial.pdf).
 - The **Nextflow** documentation can be found [*here*](https://www.nextflow.io/docs/latest/index.html).
 
-<H3 align="center"> Reproducible workflows using Nextflow </H3>
-<p align="center">
-  <img width="1000" src="_static/images/best_practices.png">
-  Flow chart summarizing the resources and best practices for development, maintenance, sharing and publishing of reproducible and portable workflows.
-</p>
-
 ## 1. Introduction
 This tutorial in an introduction to Nextflow, primarily through examples. Since the tutorial is brief, it is designed to whet your appetite -- we're only going to dip in and out of some of its features in a superficial way.
 
@@ -1014,6 +1008,14 @@ Afterwards shut down:
 ```bash
 nextflow shutdown GenomeCloud
 ```
+
+## How it All Fits 
+
+<H3 align="center"> Reproducible workflows using Nextflow </H3>
+<p align="center">
+  <img width="1000" src="_static/images/best_practices.png">
+  Flow chart summarizing the resources and best practices for development, maintenance, sharing and publishing of reproducible and portable workflows.
+</p>
 
 <!-- ## 6. Channel Operations -->
 <!-- Nextflow tries to maximise concurrency -->
